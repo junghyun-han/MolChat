@@ -76,6 +76,10 @@ python scripts/build_index.py --out data/index
 pip install torch transformers
 python scripts/rag_demo.py --out docs/RAG_DEMO.md
 
+# LangChain integration: tools as StructuredTools + LCEL RAG chain
+pip install langchain-core
+python scripts/langchain_demo.py --out docs/LANGCHAIN_DEMO.md
+
 # P3 evaluation (retrieval A/B + agent A/B, fully offline)
 python scripts/run_eval.py --out docs/EVAL.md
 

@@ -11,6 +11,7 @@
 | `molchat/rag.py` | `RagIndex`: embeds the corpus, retrieves nearest molecules for a query. |
 | `molchat/knowledge.py` | `TextKnowledgeBase`: TF-IDF retrieval over a chemistry/ML text knowledge base (document RAG). |
 | `molchat/rag_generate.py` | Real RAG: retrieve (molecules + passages) then a local LLM generates the grounded answer. |
+| `molchat/integrations/langchain_tools.py` | LangChain integration: tools as StructuredTools, a BaseRetriever, and an LCEL RAG chain. |
 | `molchat/predictor.py` | Property prediction (`Predictor` interface): heuristic BBB estimator now, Moleco checkpoint drop-in later. |
 | `molchat/tools.py` | Function-calling tool registry: JSON schemas + `Toolbox.dispatch`; centralized name/SMILES resolution. |
 | `molchat/llm.py` | LLM backends returning the next `Turn` (tool calls or final answer): rule-based default, Anthropic/OpenAI optional. |
