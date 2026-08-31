@@ -14,18 +14,24 @@ python scripts/build_dataset.py --out data/qa
 Answers are grounded in P1's own tools (exact RDKit descriptors, BBB predictor,
 embedding retrieval), so the model is distilled from faithful outputs.
 
-## 2-b · LoRA fine-tune (Colab T4)
+## 2-b · LoRA fine-tune
+
+**Measured results: [`docs/P2_RESULTS.md`](../docs/P2_RESULTS.md).** This was run
+end-to-end on an Apple Silicon Mac (MPS) — no cloud GPU needed.
+
+Local (Mac MPS / CPU), version-stable, transformers + peft:
 
 ```bash
-pip install "transformers>=4.44" "peft>=0.13" "trl>=0.11" \
-            "datasets>=2.20" "accelerate>=0.34"
-python p2/train_lora.py --data data/qa --out p2/out/molchat-qwen-lora
+pip install transformers peft datasets accelerate
+python p2/train_lora_local.py --data data/qa --out p2/out/molchat-qwen-lora
 ```
 
-LoRA config: r=16, alpha=32, dropout=0.05 on the attention projections — only a
-small fraction of parameters are trained (PEFT). Eval runs on the held-out
-molecules to measure generalization. See `notebooks/p2_lora_qwen.ipynb` for the
-one-click Colab version.
+Colab T4 (TRL) alternative — `python p2/train_lora.py ...`, or the one-click
+`notebooks/p2_lora_qwen.ipynb`.
+
+LoRA config: r=16, alpha=32, dropout=0.05 on the attention projections — only
+0.44% of parameters are trained. Eval runs on held-out molecules; eval loss went
+3.386 → 0.457.
 
 ## 2-c · Quantize to GGUF (Mac or Colab)
 
@@ -40,8 +46,9 @@ python convert_hf_to_gguf.py ../p2/out/merged --outfile molchat-f16.gguf
 ./llama-quantize molchat-f16.gguf molchat-q4_k_m.gguf Q4_K_M
 ```
 
-Report the size / latency / quality trade-off (f16 vs Q4) in a small table —
-this is the "inference optimization / quantization" evidence.
+Measured here: f16 GGUF 994.2 MB → Q4_K_M 397.8 MB (**2.50× smaller, 60%
+reduction**), serving at ~137 tokens/s on Apple Metal. Full numbers in
+[`docs/P2_RESULTS.md`](../docs/P2_RESULTS.md).
 
 ## 2-d · Serve + wire into the MolChat agent
 

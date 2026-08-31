@@ -53,7 +53,7 @@ molecular-LLM foundation I already know.
 | Layer | What | Status |
 |---|---|---|
 | **P1 · RAG + agent** | molecular-embedding retrieval (FAISS) **+ text-document retrieval (knowledge base)** + function-calling agent (4 tools) **+ real LLM generation over retrieved context** | ✅ this repo → [`docs/RAG_DEMO.md`](docs/RAG_DEMO.md) |
-| **P2 · PEFT + quantization + serving** | LoRA fine-tune (Qwen2.5-0.5B) → GGUF/AWQ quantize → serve; dataset + pipeline ready | ✅ pipeline (`p2/`), Colab run pending |
+| **P2 · PEFT + quantization + serving** | LoRA fine-tune (Qwen2.5-0.5B, eval loss 3.39→0.46) → GGUF Q4 quantize (2.5× smaller) → serve (137 tok/s, Metal) | ✅ **executed on Mac** → [`docs/P2_RESULTS.md`](docs/P2_RESULTS.md) |
 | **P3 · Evaluation / A/B** | retrieval A/B (embedding vs baseline) + faithfulness judge (rule-based/LLM) + agent A/B (RAG on/off) | ✅ this repo → [`docs/EVAL.md`](docs/EVAL.md) |
 | **P4 · Serving + edge** | FastAPI API + Dockerfile + ONNX on-device inference (onnxruntime) | ✅ this repo (`serving/`, `edge/`) |
 
