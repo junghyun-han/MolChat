@@ -35,11 +35,12 @@ def compute_descriptors(smiles: str) -> dict:
     rotatable_bonds, ring_count, aromatic_rings, heavy_atoms, formula.
     """
     mol = parse_smiles(smiles)
+    # `+ 0.0` normalizes negative zero (e.g. -0.0 logP) to 0.0 for clean labels.
     return {
         "canonical_smiles": Chem.MolToSmiles(mol),
-        "molecular_weight": round(Descriptors.MolWt(mol), 2),
-        "logp": round(Crippen.MolLogP(mol), 2),
-        "tpsa": round(rdMolDescriptors.CalcTPSA(mol), 2),
+        "molecular_weight": round(Descriptors.MolWt(mol), 2) + 0.0,
+        "logp": round(Crippen.MolLogP(mol), 2) + 0.0,
+        "tpsa": round(rdMolDescriptors.CalcTPSA(mol), 2) + 0.0,
         "h_bond_donors": rdMolDescriptors.CalcNumHBD(mol),
         "h_bond_acceptors": rdMolDescriptors.CalcNumHBA(mol),
         "rotatable_bonds": rdMolDescriptors.CalcNumRotatableBonds(mol),

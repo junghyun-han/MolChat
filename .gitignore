@@ -21,6 +21,10 @@ data/index/
 *.onnx
 *.gguf
 
+# P2 training outputs (adapters/merged weights are large)
+p2/out/
+llama.cpp/
+
 # models / checkpoints (large, not committed)
 checkpoints/
 models/

@@ -181,11 +181,18 @@ class AnthropicBackend(LLMBackend):  # pragma: no cover - needs API key
 class OpenAIBackend(LLMBackend):  # pragma: no cover - needs API key
     name = "openai"
 
-    def __init__(self, model: str = "gpt-4o-mini"):
+    def __init__(self, model: str = "gpt-4o-mini", base_url: str | None = None):
         import openai
 
         self.model = model
-        self._client = openai.OpenAI()
+        # base_url lets this drive a *local* OpenAI-compatible server too
+        # (Ollama / llama.cpp) — that is how the P2 fine-tuned+quantized model
+        # is wired back into the agent as its reasoning engine.
+        if base_url:
+            self.name = f"local({base_url})"
+            self._client = openai.OpenAI(base_url=base_url, api_key="not-needed")
+        else:
+            self._client = openai.OpenAI()
 
     def step(self, messages: List[Dict[str, Any]], tools: List[Dict]) -> Turn:
         tool_defs = [{"type": "function", "function": t} for t in tools]
@@ -254,6 +261,14 @@ def get_llm(known_names: Optional[List[str]] = None) -> LLMBackend:
     override = os.getenv("MOLCHAT_LLM", "").lower()
     if override == "rule-based":
         return RuleBasedBackend(known_names)
+    if override == "local":
+        # Local OpenAI-compatible server (Ollama / llama.cpp) — the P2 model.
+        base_url = os.getenv("MOLCHAT_LLM_BASE_URL", "http://localhost:11434/v1")
+        model = os.getenv("MOLCHAT_LLM_MODEL", "molchat")
+        try:
+            return OpenAIBackend(model=model, base_url=base_url)
+        except Exception:
+            return RuleBasedBackend(known_names)
     if override == "anthropic" or (not override and os.getenv("ANTHROPIC_API_KEY")):
         try:
             return AnthropicBackend()
