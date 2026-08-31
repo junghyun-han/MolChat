@@ -84,8 +84,32 @@ def _transformers_generator(model_name: str = "Qwen/Qwen2.5-0.5B-Instruct") -> C
     return generate
 
 
+def _openai_compat_generator() -> Callable:  # pragma: no cover - needs a server
+    """Generator backed by any OpenAI-compatible server (e.g. vLLM, Ollama)."""
+    import openai
+
+    base_url = os.getenv("MOLCHAT_GEN_BASE_URL", "http://localhost:8000/v1")
+    model = os.getenv("MOLCHAT_GEN_MODEL", "molchat")
+    client = openai.OpenAI(base_url=base_url, api_key=os.getenv("MOLCHAT_GEN_KEY", "x"))
+
+    def generate(system: str, user: str) -> str:
+        resp = client.chat.completions.create(
+            model=model,
+            messages=[{"role": "system", "content": system}, {"role": "user", "content": user}],
+            max_tokens=200,
+            temperature=0.0,
+        )
+        return (resp.choices[0].message.content or "").strip()
+
+    generate.backend = f"openai-compat({base_url},{model})"  # type: ignore[attr-defined]
+    return generate
+
+
 def get_generator() -> Callable:
     choice = os.getenv("MOLCHAT_GEN", "").lower()
+    # An OpenAI-compatible server (vLLM / Ollama) — set MOLCHAT_GEN=local.
+    if choice == "local" or (not choice and os.getenv("MOLCHAT_GEN_BASE_URL")):
+        return _openai_compat_generator()
     if choice in ("", "transformers"):
         try:
             return _transformers_generator()

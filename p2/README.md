@@ -73,6 +73,19 @@ Now the agent's reasoning is done by *your* fine-tuned, quantized, locally-serve
 model, calling the same P1 tools. That is the full "built + ran an LLM system"
 path: fine-tune → quantize → serve → orchestrate.
 
+## 2-d (alt) · Serve with vLLM (Colab GPU)
+
+vLLM needs CUDA, so this runs on Colab, not on a Mac. Ready-to-run notebook:
+`notebooks/p2_vllm_serve.ipynb`. It starts vLLM's OpenAI-compatible server and
+drives MolChat's RAG generation against it:
+
+```bash
+python -m vllm.entrypoints.openai.api_server --model Qwen/Qwen2.5-0.5B-Instruct --port 8000
+export MOLCHAT_GEN=local MOLCHAT_GEN_BASE_URL=http://localhost:8000/v1
+export MOLCHAT_GEN_MODEL=Qwen/Qwen2.5-0.5B-Instruct
+python -c "from molchat.rag_generate import answer_with_rag; print(answer_with_rag('Is aspirin BBB permeable?', molecule='aspirin')['answer'])"
+```
+
 ## Edge / embedded (P4 hook)
 
 The same GGUF runs on-device via `llama.cpp` (C++), and the property predictor
