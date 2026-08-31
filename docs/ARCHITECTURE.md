@@ -18,6 +18,9 @@
 | `molchat/eval/retrieval.py` | P3 retrieval metrics + embedder A/B (fingerprint vs random baseline). |
 | `molchat/eval/judge.py` | P3 faithfulness judge: rule-based (offline) + LLM-as-judge (optional). |
 | `molchat/eval/ab.py` | P3 agent A/B: RAG on vs off, scored by the judge. |
+| `serving/app.py` | P4 FastAPI service (`/ask` `/predict` `/search` `/descriptors` `/health`). |
+| `serving/Dockerfile` | P4 container image for the service. |
+| `edge/export_onnx.py` | P4 edge path: export a compact property model to ONNX + onnxruntime benchmark. |
 
 ## The agent loop
 

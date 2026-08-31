@@ -55,7 +55,7 @@ molecular-LLM foundation I already know.
 | **P1 · RAG + agent** | molecular-similarity retrieval (FAISS) + function-calling agent (3 tools) | ✅ this repo |
 | **P2 · PEFT + quantization + serving** | LoRA fine-tune (Qwen2.5-0.5B) → GGUF/AWQ quantize → serve; dataset + pipeline ready | ✅ pipeline (`p2/`), Colab run pending |
 | **P3 · Evaluation / A/B** | retrieval A/B (embedding vs baseline) + faithfulness judge (rule-based/LLM) + agent A/B (RAG on/off) | ✅ this repo → [`docs/EVAL.md`](docs/EVAL.md) |
-| P4 · Serving spine | FastAPI + Docker + edge/ONNX inference | 🔜 roadmap |
+| **P4 · Serving + edge** | FastAPI API + Dockerfile + ONNX on-device inference (onnxruntime) | ✅ this repo (`serving/`, `edge/`) |
 
 ## 4. Install & run
 
@@ -73,6 +73,19 @@ python scripts/build_index.py --out data/index
 
 # P3 evaluation (retrieval A/B + agent A/B, fully offline)
 python scripts/run_eval.py --out docs/EVAL.md
+
+# P4 serving (FastAPI) and edge ONNX inference
+pip install fastapi "uvicorn[standard]"
+uvicorn serving.app:app --reload      # POST /ask /predict /search, GET /health
+pip install scikit-learn skl2onnx onnx onnxruntime
+python edge/export_onnx.py --out edge/out/bbb_screen.onnx   # ~0.8 KB, ~0.004 ms/mol
+```
+
+Container:
+
+```bash
+docker build -f serving/Dockerfile -t molchat .
+docker run -p 8000:8000 molchat        # http://localhost:8000/health
 ```
 
 Optional hosted LLM (drives the same agent via native function calling):

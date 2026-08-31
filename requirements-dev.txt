@@ -4,6 +4,17 @@
 pytest>=8.0
 ruff>=0.6
 
+# Serving (P4) — FastAPI app + test client
+fastapi>=0.115
+httpx>=0.27
+uvicorn>=0.30
+
+# Edge (P4) ONNX export — optional; enable to run edge/export_onnx.py + its test:
+#   scikit-learn>=1.5
+#   skl2onnx>=1.17
+#   onnx>=1.16
+#   onnxruntime>=1.18
+
 # Optional LLM backends (NOT needed for the default rule-based agent or CI).
 # Install only if you want to drive the agent with a hosted or local LLM:
 #   anthropic>=0.39      # ANTHROPIC_API_KEY

@@ -25,6 +25,9 @@ data/index/
 p2/out/
 llama.cpp/
 
+# P4 edge artifacts
+edge/out/
+
 # models / checkpoints (large, not committed)
 checkpoints/
 models/
