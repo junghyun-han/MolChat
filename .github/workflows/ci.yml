@@ -32,3 +32,6 @@ jobs:
 
       - name: Smoke test (agent runs end-to-end, offline)
         run: python -m molchat.cli "Is aspirin BBB permeable?"
+
+      - name: Smoke test (evaluation suite runs offline)
+        run: python scripts/run_eval.py --n 6

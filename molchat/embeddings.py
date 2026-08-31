@@ -22,6 +22,7 @@ shape ``(dim,)``, L2-normalized, so cosine similarity == inner product.
 from __future__ import annotations
 
 import abc
+import hashlib
 from typing import List
 
 import numpy as np
@@ -73,6 +74,25 @@ class FingerprintEmbedder(EmbeddingBackend):
         for bit in fp.GetOnBits():
             arr[bit] = 1.0
         return _l2_normalize(arr)
+
+
+class RandomEmbedder(EmbeddingBackend):
+    """Deterministic random embedding — a baseline/control for A/B evaluation.
+
+    Each SMILES maps (via a hash seed) to a fixed random unit vector. It carries
+    no chemical information, so it is the null hypothesis retrieval quality is
+    measured against: a real embedder must beat it on chemical-neighbor metrics.
+    """
+
+    def __init__(self, dim: int = 256):
+        self.name = f"random(dim={dim})"
+        self.dim = dim
+
+    def embed(self, smiles: str) -> np.ndarray:
+        parse_smiles(smiles)  # validate, same contract as real backends
+        seed = int(hashlib.sha256(smiles.encode()).hexdigest(), 16) % (2**32)
+        rng = np.random.default_rng(seed)
+        return _l2_normalize(rng.standard_normal(self.dim).astype("float32"))
 
 
 class MolformerEmbedder(EmbeddingBackend):
@@ -133,6 +153,8 @@ def get_embedder(name: str = "fingerprint", **kwargs) -> EmbeddingBackend:
     name = name.lower()
     if name == "fingerprint":
         return FingerprintEmbedder(**kwargs)
+    if name == "random":
+        return RandomEmbedder(**kwargs)
     if name == "molformer":
         return MolformerEmbedder(**kwargs)
     if name == "moleco":

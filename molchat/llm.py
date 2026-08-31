@@ -61,8 +61,12 @@ _SMILES_RE = re.compile(r"^[A-Za-z0-9@+\-\[\]()=#/\\%.]{3,}$")
 class RuleBasedBackend(LLMBackend):
     name = "rule-based"
 
-    def __init__(self, known_names: Optional[List[str]] = None):
+    def __init__(
+        self, known_names: Optional[List[str]] = None, use_rag: bool = True
+    ):
         self.known_names = sorted(known_names or [], key=len, reverse=True)
+        # use_rag=False gives the "no-retrieval" A/B control condition.
+        self.use_rag = use_rag
 
     def _extract_molecule(self, question: str) -> Optional[str]:
         q = question.lower()
@@ -92,13 +96,13 @@ class RuleBasedBackend(LLMBackend):
                         "molecule name (e.g. aspirin) or a SMILES string."
                     )
                 )
-            return Turn(
-                tool_calls=[
-                    ToolCall("rag_search", {"molecule": molecule, "k": 3}),
-                    ToolCall("rdkit_descriptors", {"molecule": molecule}),
-                    ToolCall("moleco_predict", {"molecule": molecule}),
-                ]
-            )
+            calls = [
+                ToolCall("rdkit_descriptors", {"molecule": molecule}),
+                ToolCall("moleco_predict", {"molecule": molecule}),
+            ]
+            if self.use_rag:
+                calls.insert(0, ToolCall("rag_search", {"molecule": molecule, "k": 3}))
+            return Turn(tool_calls=calls)
 
         results = {
             m["name"]: m["content"]
