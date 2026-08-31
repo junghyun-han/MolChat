@@ -1,0 +1,7 @@
+# MolChat P1 (RAG + function-calling agent) — core runtime deps.
+# Deliberately lightweight so the RAG + agent pipeline runs on a laptop CPU
+# and in CI without any API key (a deterministic rule-based LLM backend is the
+# default; API/local backends are optional — see molchat/llm.py).
+rdkit>=2024.3
+faiss-cpu>=1.8
+numpy>=1.26

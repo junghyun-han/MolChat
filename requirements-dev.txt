@@ -1,0 +1,16 @@
+-r requirements.txt
+
+# Testing + linting
+pytest>=8.0
+ruff>=0.6
+
+# Optional LLM backends (NOT needed for the default rule-based agent or CI).
+# Install only if you want to drive the agent with a hosted or local LLM:
+#   anthropic>=0.39      # ANTHROPIC_API_KEY
+#   openai>=1.40         # OPENAI_API_KEY
+# Optional chemical language-model embedding backend (heavier; CPU-capable):
+#   transformers>=4.44
+#   torch>=2.2
+# Optional edge/on-device inference (P2/edge):
+#   onnx>=1.16
+#   onnxruntime>=1.18

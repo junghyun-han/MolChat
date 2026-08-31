@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# venv
+.venv/
+venv/
+env/
+
+# env / secrets
+.env
+*.key
+
+# built artifacts
+data/index/
+*.faiss
+*.onnx
+*.gguf
+
+# models / checkpoints (large, not committed)
+checkpoints/
+models/
+*.ckpt
+*.pt
+*.bin
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# test / cache
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+htmlcov/
+.coverage
