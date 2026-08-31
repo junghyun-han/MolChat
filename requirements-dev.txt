@@ -19,7 +19,8 @@ uvicorn>=0.30
 # Install only if you want to drive the agent with a hosted or local LLM:
 #   anthropic>=0.39      # ANTHROPIC_API_KEY
 #   openai>=1.40         # OPENAI_API_KEY
-# Optional chemical language-model embedding backend (heavier; CPU-capable):
+# Optional local LLM for real RAG generation (scripts/rag_demo.py) and the
+# MoLFormer embedding backend — CPU/MPS capable, downloads model weights:
 #   transformers>=4.44
 #   torch>=2.2
 # Optional edge/on-device inference (P2/edge):

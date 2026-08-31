@@ -52,7 +52,7 @@ molecular-LLM foundation I already know.
 
 | Layer | What | Status |
 |---|---|---|
-| **P1 · RAG + agent** | molecular-similarity retrieval (FAISS) + function-calling agent (3 tools) | ✅ this repo |
+| **P1 · RAG + agent** | molecular-embedding retrieval (FAISS) **+ text-document retrieval (knowledge base)** + function-calling agent (4 tools) **+ real LLM generation over retrieved context** | ✅ this repo → [`docs/RAG_DEMO.md`](docs/RAG_DEMO.md) |
 | **P2 · PEFT + quantization + serving** | LoRA fine-tune (Qwen2.5-0.5B) → GGUF/AWQ quantize → serve; dataset + pipeline ready | ✅ pipeline (`p2/`), Colab run pending |
 | **P3 · Evaluation / A/B** | retrieval A/B (embedding vs baseline) + faithfulness judge (rule-based/LLM) + agent A/B (RAG on/off) | ✅ this repo → [`docs/EVAL.md`](docs/EVAL.md) |
 | **P4 · Serving + edge** | FastAPI API + Dockerfile + ONNX on-device inference (onnxruntime) | ✅ this repo (`serving/`, `edge/`) |
@@ -70,6 +70,11 @@ python -m molchat.cli --trace "Describe caffeine and show similar molecules"
 # Run the demo and build a persisted index
 python scripts/demo.py
 python scripts/build_index.py --out data/index
+
+# Real RAG generation: retrieve (molecules + text passages) then an actual
+# local LLM generates the grounded answer (downloads a small model, MPS/CPU)
+pip install torch transformers
+python scripts/rag_demo.py --out docs/RAG_DEMO.md
 
 # P3 evaluation (retrieval A/B + agent A/B, fully offline)
 python scripts/run_eval.py --out docs/EVAL.md

@@ -15,6 +15,7 @@ from typing import Any, Dict, List, Optional
 
 from .corpus import load_corpus, name_to_smiles
 from .descriptors import compute_descriptors, parse_smiles
+from .knowledge import TextKnowledgeBase
 from .predictor import Predictor, get_predictor
 from .rag import RagIndex
 
@@ -33,6 +34,7 @@ class Toolbox:
         self._names = name_to_smiles(self.corpus)
         self.rag = rag or RagIndex().build(self.corpus)
         self.predictor = predictor or get_predictor("heuristic")
+        self.knowledge = TextKnowledgeBase()
 
     # --- molecule resolution --------------------------------------------
     def resolve(self, molecule: str) -> str:
@@ -72,6 +74,16 @@ class Toolbox:
             ],
         }
 
+    def knowledge_search(self, query: str, k: int = 3) -> Dict[str, Any]:
+        hits = self.knowledge.search(query, k=int(k))
+        return {
+            "query": query,
+            "passages": [
+                {"id": p.id, "title": p.title, "text": p.text, "score": p.score}
+                for p in hits
+            ],
+        }
+
     # --- dispatch + schemas ---------------------------------------------
     def dispatch(self, name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
         if name == "rdkit_descriptors":
@@ -80,6 +92,8 @@ class Toolbox:
             return self.moleco_predict(**arguments)
         if name == "rag_search":
             return self.rag_search(**arguments)
+        if name == "knowledge_search":
+            return self.knowledge_search(**arguments)
         raise ToolError(f"unknown tool: {name!r}")
 
     def specs(self) -> List[Dict[str, Any]]:
@@ -147,6 +161,27 @@ TOOL_SPECS: List[Dict[str, Any]] = [
                 },
             },
             "required": ["molecule"],
+        },
+    },
+    {
+        "name": "knowledge_search",
+        "description": (
+            "Retrieve relevant text passages from the chemistry/ML knowledge base "
+            "(document retrieval for grounding a generated answer)."
+        ),
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "A natural-language query.",
+                },
+                "k": {
+                    "type": "integer",
+                    "description": "Number of passages to return (default 3).",
+                },
+            },
+            "required": ["query"],
         },
     },
 ]
