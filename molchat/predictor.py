@@ -5,10 +5,10 @@ estimator of blood-brain-barrier (BBB) permeability derived from exact RDKit
 descriptors (TPSA / MW / logP / H-bond counts). It is a physicochemical
 heuristic, NOT the trained Moleco classifier and NOT ground truth.
 
-The trained Moleco model (MoLFormer + contrastive learning, the personal
-research artifact, ROC-AUC 75.8->77.3 on BBBP in the paper) plugs into the same
-``Predictor`` interface via ``MolecoPredictor`` once a checkpoint is available,
-so the agent/tooling above it does not change.
+The trained Moleco model (MoLFormer + contrastive learning, a lab research
+artifact used with permission) plugs into the same ``Predictor`` interface via
+``MolecoPredictor`` once a checkpoint is available, so the agent/tooling above
+it does not change.
 """
 
 from __future__ import annotations

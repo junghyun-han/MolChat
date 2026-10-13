@@ -9,18 +9,16 @@ reused here as the vectorizer that populates the retrieval index.
 
 > **What this repo is, in one line:** not "I used an LLM once", but "I *built*
 > and *ran* an LLM system — RAG, function calling, tool orchestration,
-> evaluation, and deployment — on top of my own representation model."
+> evaluation, and deployment — on top of a molecular representation model."
 
 ---
 
 ## 1. Why it exists
 
-Across the AI/ML job descriptions I mapped (Furiosa, Shinhan, SKT, Naver Cloud,
-LG H&H), the most frequently required skills I had *not* yet evidenced were
-**agents / function calling**, **RAG + vector databases**, **LLM
-serving/quantization**, and **applied evaluation (A/B)**. MolChat is the single
-end-to-end project that turns those into working, testable code, reusing the
-molecular-LLM foundation I already know.
+**Agents with function calling**, **RAG over a vector database**, **LLM
+fine-tuning, quantization and serving**, and **applied evaluation (A/B)** are
+what turn a model into a working LLM system. MolChat builds all of them end to
+end as working, testable code around one molecular question-answering task.
 
 ## 2. Architecture
 
@@ -121,8 +119,8 @@ Nearest molecules by embedding: aspirin (1.0), benzoic-acid (0.546), phenol (0.4
 - **`rdkit_descriptors`** returns *exact* physicochemical properties (ground truth).
 - **`moleco_predict`** currently uses a transparent **rule-of-thumb** BBB estimator
   derived from those descriptors — it is **not** the trained Moleco classifier and
-  not ground truth. The trained model (Moleco, ROC-AUC 75.8→77.3 on BBBP in the
-  paper) plugs into the same `Predictor` interface via a checkpoint (P2).
+  not ground truth. A trained Moleco classifier plugs into the same `Predictor`
+  interface via a checkpoint.
 - **Embeddings** default to RDKit fingerprints so the pipeline runs anywhere; the
   MoLFormer / Moleco backends produce the learned embeddings when their weights
   are available.
@@ -131,11 +129,12 @@ Nearest molecules by embedding: aspirin (1.0), benzoic-acid (0.546), phenol (0.4
   engineering work. Everything here is local/laptop-scale validation, not a
   production deployment.
 
-## 7. Roadmap
+## 7. Status
 
-P1 (this repo) → **P2** LoRA + quantization + serving (Colab T4 / Mac llama.cpp)
-→ **P3** evaluation & A/B (base vs RAG, LLM-as-judge) → **P4** FastAPI + Docker +
-edge/ONNX on-device inference. See `docs/ARCHITECTURE.md`.
+P1 to P4 are implemented (see the table in Section 3). Not done yet: the trained
+Moleco classifier is not wired into `moleco_predict`, which still uses the
+rule-of-thumb estimator described above. See `docs/ARCHITECTURE.md` for the
+design.
 
 ## License
 

@@ -12,7 +12,7 @@ Backends
   foundation model the Moleco project builds on. Requires ``transformers`` +
   ``torch``; CPU-capable.
 - ``moleco`` (drop-in): loads a Moleco fine-tuned checkpoint. This is the
-  personal research artifact — the checkpoint is not shipped in this repo; the
+  lab research artifact used with permission — the checkpoint is not shipped in this repo; the
   class documents the exact interface it plugs into.
 
 All backends implement the same contract: ``embed(smiles) -> np.ndarray`` of
@@ -130,7 +130,7 @@ class MolformerEmbedder(EmbeddingBackend):
 
 
 class MolecoEmbedder(MolformerEmbedder):
-    """Drop-in for the Moleco fine-tuned checkpoint (personal research artifact).
+    """Drop-in for the Moleco fine-tuned checkpoint (lab research artifact used with permission).
 
     Moleco = MoLFormer + fingerprint-based contrastive learning + substructure
     prediction. The checkpoint is not distributed with this portfolio; point
