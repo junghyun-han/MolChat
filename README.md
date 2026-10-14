@@ -7,10 +7,6 @@ chemical-language-model project (MoLFormer + fingerprint contrastive learning,
 EMNLP 2024 Industry) — used with permission. Moleco's molecular embedding is
 reused here as the vectorizer that populates the retrieval index.
 
-> **What this repo is, in one line:** not "I used an LLM once", but "I *built*
-> and *ran* an LLM system — RAG, function calling, tool orchestration,
-> evaluation, and deployment — on top of a molecular representation model."
-
 ---
 
 ## 1. Why it exists
